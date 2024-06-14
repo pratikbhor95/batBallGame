@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .btn{
+      display: flex;
+      justify-content: space-evenly;
+      
+    }
+    h1{
+      display: flex;
+      justify-content: center;
+    }
+    .game-container{
+      display: flex;
+      flex-direction: column;
+      border: solid 1px;
+      padding: 10px;
+      margin: 10px;
+      width: 70%;
+      margin-left: 10%;
+    }
+    .game-result{
+      display: flex;
+      justify-content: center;
+      margin: 10px;
+      padding: 10px;
+      font-weight:bolder;
+
+    }
+    .move-description{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <header></header>
+  <main>
+    <div class="game-container">
+      <h1>This is bat ball game</h1>
+      <div class="btn">
+        <button onclick="
+        game('bat');
+        ">bat</button>
+        <button onclick="game('ball')">ball</button>
+        <button onclick="game('stump')">stump</button>
+        <button onclick="
+        localStorage.clear();
+        resetScore();">reset</button>
+      </div>
+    </div>
+    <div class="game-result">
+      
+    </div>
+    <div class="move-description">
+      <div id="user-move"></div>
+      <div id="comp-move"></div>
+
+    </div>
+  </main>
+  <footer></footer>
+<script>
+/* bat defeats ball
+  ball defeats wicket
+  wicket defeats ball
+  */
+ let scorestr = localStorage.getItem('score') 
+ let score;
+ resetScore(scorestr)
+
+ function resetScore(scorestr){
+
+  score = scorestr? JSON.parse(scorestr) : {
+    win:0,
+    lost:0,
+    tie:0,
+  };
+  displayScore('','');
+  }
+//  localStorage.setItem('score' , JSON.stringify(score))
+function displayScore(usermove , computerChoice){
+  // score = JSON.parse(localStorage.getItem('score'))
+ localStorage.setItem('score' , JSON.stringify(score))
+
+  document.querySelector('.game-result').innerHTML = `win:${score.win},
+  lost:${score.lost},
+  tie:${score.tie},`
+
+  document.querySelector('#user-move').innerHTML = `You have selected :${usermove}`
+
+  document.querySelector('#comp-move').innerHTML = `computer have selected :${computerChoice}`
+
+
+}
+function computerChoiceGenerator(){
+  let randomNumber = Math.floor(Math.random()*3);
+
+  if (randomNumber === 0) {
+    return 'bat';
+  }
+  if (randomNumber === 1) {
+    return 'ball';
+  }
+  if (randomNumber === 2) {
+    return 'stump';
+  }
+  
+}
+
+
+function game(usermove){
+  let computerChoice = computerChoiceGenerator()
+  if (usermove === 'bat'){
+    if (computerChoice === 'bat'){
+      score.tie++;
+    }else if (computerChoice === 'ball'){
+      score.win++;
+    }
+    else if (computerChoice === 'stump'){
+      score.lost++;
+    }
+
+  }
+  else if (usermove === 'ball'){
+    if (computerChoice === 'bat'){
+      score.lost++;
+    }else if (computerChoice === 'ball'){
+      score.tie++;
+    }
+    else if (computerChoice === 'stump'){
+      score.win++;
+    }
+
+  }else if (usermove === 'stump'){
+    if (computerChoice === 'bat'){
+      score.win++;
+    }else if (computerChoice === 'ball'){
+      score.lost++;
+    }
+    else if (computerChoice === 'stump'){
+      score.tie++;
+    }
+  }
+  displayScore(usermove , computerChoice)
+
+}
+
+</script>
+</body>
+</html>
